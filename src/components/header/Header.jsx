@@ -2,10 +2,17 @@ import React, { useEffect } from 'react'
 import "./Header.css"
 import { useDispatch, useSelector } from 'react-redux'
 import { moveDown, moveLeft, moveRight, moveUp } from '../../features/2048/gameSlice'
+import { useNavigate } from 'react-router-dom'
 
 const Header = () => {
-    const { grid } = useSelector(state => state.game)
+    const { grid, status } = useSelector(state => state.game)
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (status === "GAMEOVER")
+            navigate("/game-over")
+    }, [status, navigate])
 
     useEffect(() => {
         const handleKeyDown = (event) => {

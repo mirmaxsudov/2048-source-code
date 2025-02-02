@@ -16,14 +16,9 @@ import {
 export const isGameOver = (grid) => {
   const size = grid.length;
 
-  // Check for empty cells
-  for (let row = 0; row < size; row++) {
-    for (let col = 0; col < size; col++) {
-      if (!grid[row][col].val) return false;
-    }
-  }
+  for (let row = 0; row < size; row++)
+    for (let col = 0; col < size; col++) if (!grid[row][col].val) return false;
 
-  // Check for possible merges
   for (let row = 0; row < size; row++) {
     for (let col = 0; col < size; col++) {
       const currentVal = grid[row][col].val;
@@ -109,7 +104,6 @@ export const makeDown = (grid) => {
   const size = newGrid.length;
 
   for (let col = 0; col < size; col++) {
-    // Extract non-null values from the column (top to bottom)
     const column = [];
     for (let row = 0; row < size; row++) {
       if (newGrid[row][col].val !== null) {
@@ -117,29 +111,25 @@ export const makeDown = (grid) => {
       }
     }
 
-    // Merge tiles from bottom to top (avoid double merges)
     for (let i = column.length - 1; i > 0; i--) {
       if (column[i] === column[i - 1]) {
-        column[i] *= 2; // Merge tiles
-        column[i - 1] = null; // Mark the upper tile as merged
-        i--; // Skip the merged tile
+        column[i] *= 2;
+        column[i - 1] = null;
+        i--;
       }
     }
 
-    // Remove nulls after merging
     const newColumn = column.filter((val) => val !== null);
 
-    // Pad with nulls at the TOP to shift tiles DOWN
     const padLength = size - newColumn.length;
     const paddedColumn = Array(padLength).fill(null).concat(newColumn);
 
-    // Update the grid column (top to bottom)
     for (let row = 0; row < size; row++) {
       newGrid[row][col].val = paddedColumn[row] ?? null;
     }
   }
 
-  checkAndChange(newGrid); // Assuming this adds a new tile
+  checkAndChange(newGrid);
   return newGrid;
 };
 
@@ -232,7 +222,7 @@ export const getRandomValue = (grid) => {
 };
 
 export const isPossibleToGenerateRandomValue = (grid, direction) => {
-  if (!grid || grid.length === 0) return false; // Check if grid is valid
+  if (!grid || grid.length === 0) return false;
 
   let newGrid;
   switch (direction) {

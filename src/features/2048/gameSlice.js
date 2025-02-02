@@ -200,7 +200,7 @@ const gameSlice = createSlice({
       state.grid = action.payload;
     },
     setInitValues: (state, _) => {
-      state.score = 0;
+      state.score = 315;
       const bestScore = localStorage.getItem("bestScore") || 0;
 
       state.bestScore = bestScore;
@@ -237,7 +237,6 @@ const gameSlice = createSlice({
     },
     moveUp: (state, _) => {
       if (isGameOver(state.grid)) {
-        alert("Game Over");
         state.status = "GAMEOVER";
         return;
       }
@@ -249,7 +248,6 @@ const gameSlice = createSlice({
     },
     moveDown: (state, _) => {
       if (isGameOver(state.grid)) {
-        alert("Game Over");
         state.status = "GAMEOVER";
         return;
       }
@@ -261,7 +259,6 @@ const gameSlice = createSlice({
     },
     moveLeft: (state, _) => {
       if (isGameOver(state.grid)) {
-        alert("Game Over");
         state.status = "GAMEOVER";
         return;
       }
@@ -273,7 +270,6 @@ const gameSlice = createSlice({
     },
     moveRight: (state, _) => {
       if (isGameOver(state.grid)) {
-        alert("Game Over");
         state.status = "GAMEOVER";
         return;
       }
