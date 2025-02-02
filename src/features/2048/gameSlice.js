@@ -1,7 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { v4 as uuid } from "uuid";
+import {
+  getRandomValue,
+  isGameOver,
+  isPossibleToGenerateRandomValue,
+  makeDown,
+  makeLeft,
+  makeRight,
+  makeUp,
+} from "../../helper/gameHelperMethods";
 
-const two = {
+export const two = {
   id: uuid(),
   val: 2,
   bgColor: "#EEE4DA",
@@ -9,7 +18,7 @@ const two = {
   defaultBgColor: "#BDAC97",
 };
 
-const four = {
+export const four = {
   id: uuid(),
   val: 4,
   bgColor: "#EBD8B6",
@@ -17,7 +26,7 @@ const four = {
   defaultBgColor: "#BDAC97",
 };
 
-const eight = {
+export const eight = {
   id: uuid(),
   val: 8,
   bgColor: "#F1AF74",
@@ -25,7 +34,7 @@ const eight = {
   defaultBgColor: "#BDAC97",
 };
 
-const sixteen = {
+export const sixteen = {
   id: uuid(),
   val: 16,
   bgColor: "#F6925F",
@@ -33,7 +42,7 @@ const sixteen = {
   defaultBgColor: "#BDAC97",
 };
 
-const thirtyTwo = {
+export const thirtyTwo = {
   id: uuid(),
   val: 32,
   bgColor: "#F25F5C",
@@ -41,7 +50,7 @@ const thirtyTwo = {
   defaultBgColor: "#BDAC97",
 };
 
-const sixtyFour = {
+export const sixtyFour = {
   id: uuid(),
   val: 64,
   bgColor: "#EB4D4B",
@@ -49,7 +58,7 @@ const sixtyFour = {
   defaultBgColor: "#BDAC97",
 };
 
-const oneTwentyEight = {
+export const oneTwentyEight = {
   id: uuid(),
   val: 128,
   bgColor: "#EB4D4B",
@@ -57,7 +66,7 @@ const oneTwentyEight = {
   defaultBgColor: "#BDAC97",
 };
 
-const twoFiftySix = {
+export const twoFiftySix = {
   id: uuid(),
   val: 256,
   bgColor: "#EB4D4B",
@@ -65,7 +74,7 @@ const twoFiftySix = {
   defaultBgColor: "#BDAC97",
 };
 
-const fourOneHundred = {
+export const fourOneHundred = {
   id: uuid(),
   val: 512,
   bgColor: "#EB4D4B",
@@ -73,7 +82,7 @@ const fourOneHundred = {
   defaultBgColor: "#BDAC97",
 };
 
-const eightTwoHundred = {
+export const eightTwoHundred = {
   id: uuid(),
   val: 1024,
   bgColor: "#EB4D4B",
@@ -81,7 +90,7 @@ const eightTwoHundred = {
   defaultBgColor: "#BDAC97",
 };
 
-const sixteenFourHundred = {
+export const sixteenFourHundred = {
   id: uuid(),
   val: 2048,
   bgColor: "#EB4D4B",
@@ -89,7 +98,7 @@ const sixteenFourHundred = {
   defaultBgColor: "#BDAC97",
 };
 
-const thirtyTwoEightHundred = {
+export const thirtyTwoEightHundred = {
   id: uuid(),
   val: 4096,
   bgColor: "#EB4D4B",
@@ -100,62 +109,78 @@ const thirtyTwoEightHundred = {
 const initGameState = {
   score: 0,
   bestScore: 0,
-  gameLanguage: "uz",
+  status: "PLAYING", // || "GAMEOVER",
   grid: [
     [
       {
         ...four,
+        val: null,
       },
       {
         ...two,
+        val: null,
       },
       {
         ...two,
+        val: null,
       },
       {
         ...two,
-      },
-    ],
-    [
-      {
-        ...two,
-      },
-      {
-        ...two,
-      },
-      {
-        ...two,
-      },
-      {
-        ...two,
+        val: null,
       },
     ],
     [
       {
         ...two,
+        val: null,
       },
       {
         ...two,
+        val: null,
       },
       {
         ...two,
+        val: null,
       },
       {
         ...two,
+        val: null,
+      },
+    ],
+    [
+      {
+        ...two,
+        val: null,
+      },
+      {
+        ...two,
+        val: null,
+      },
+      {
+        ...two,
+        val: null,
+      },
+      {
+        ...two,
+        val: null,
       },
     ],
     [
       {
         ...four,
+        val: null,
       },
       {
         ...twoFiftySix,
+        val: null,
       },
       {
         ...two,
+        val: null,
       },
       {
         ...two,
+        val: null,
       },
     ],
   ],
@@ -165,9 +190,6 @@ const gameSlice = createSlice({
   name: "game",
   initialState: initGameState,
   reducers: {
-    setGameLanguage: (state, action) => {
-      state.gameLanguage = action.payload;
-    },
     setScore: (state, action) => {
       state.score = action.payload;
     },
@@ -177,9 +199,106 @@ const gameSlice = createSlice({
     setGrid: (state, action) => {
       state.grid = action.payload;
     },
+    setInitValues: (state, _) => {
+      state.score = 0;
+      const bestScore = localStorage.getItem("bestScore") || 0;
+
+      state.bestScore = bestScore;
+
+      const newGrid = [[], [], [], []];
+
+      for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+          newGrid[i][j] = {
+            id: uuid(),
+            ...two,
+            val: null,
+          };
+        }
+      }
+
+      const i1 = getRandom(0, 3);
+      const j1 = getRandom(0, 3);
+
+      newGrid[i1][j1] = {
+        id: uuid(),
+        ...two,
+      };
+
+      const i2 = getRandom(0, 3);
+      const j2 = getRandom(0, 3);
+
+      newGrid[i2][j2] = {
+        id: uuid(),
+        ...two,
+      };
+
+      state.grid = newGrid;
+    },
+    moveUp: (state, _) => {
+      if (isGameOver(state.grid)) {
+        alert("Game Over");
+        state.status = "GAMEOVER";
+        return;
+      }
+
+      const isPossible = isPossibleToGenerateRandomValue(state.grid, "u");
+
+      state.grid = makeUp(state.grid);
+      if (isPossible) state.grid = getRandomValue(state.grid);
+    },
+    moveDown: (state, _) => {
+      if (isGameOver(state.grid)) {
+        alert("Game Over");
+        state.status = "GAMEOVER";
+        return;
+      }
+
+      const isPossible = isPossibleToGenerateRandomValue(state.grid, "down");
+
+      state.grid = makeDown(state.grid);
+      if (isPossible) state.grid = getRandomValue(state.grid);
+    },
+    moveLeft: (state, _) => {
+      if (isGameOver(state.grid)) {
+        alert("Game Over");
+        state.status = "GAMEOVER";
+        return;
+      }
+
+      const isPossible = isPossibleToGenerateRandomValue(state.grid, "left");
+
+      state.grid = makeLeft(state.grid);
+      if (isPossible) state.grid = getRandomValue(state.grid);
+    },
+    moveRight: (state, _) => {
+      if (isGameOver(state.grid)) {
+        alert("Game Over");
+        state.status = "GAMEOVER";
+        return;
+      }
+
+      const isPossible = isPossibleToGenerateRandomValue(state.grid, "right");
+
+      state.grid = makeRight(state.grid);
+      if (isPossible) state.grid = getRandomValue(state.grid);
+    },
   },
 });
 
-export const { setGameLanguage, setScore, setBestScore, setGrid } =
-  gameSlice.actions;
+function getRandom(min = 1, max = 4) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export const {
+  setGameLanguage,
+  setScore,
+  setBestScore,
+  setGrid,
+  setInitValues,
+  moveUp,
+  moveDown,
+  moveLeft,
+  moveRight,
+} = gameSlice.actions;
 export default gameSlice.reducer;

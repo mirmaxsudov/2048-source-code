@@ -1,11 +1,38 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import "./Header.css"
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { moveDown, moveLeft, moveRight, moveUp } from '../../features/2048/gameSlice'
 
 const Header = () => {
     const { grid } = useSelector(state => state.game)
+    const dispatch = useDispatch();
 
-    console.log(grid);
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            switch (event.key) {
+                case "ArrowUp":
+                    dispatch(moveUp());
+                    break;
+                case "ArrowDown":
+                    dispatch(moveDown());
+                    break;
+                case "ArrowLeft":
+                    dispatch(moveLeft());
+                    break;
+                case "ArrowRight":
+                    dispatch(moveRight());
+                    break;
+                default:
+                    break;
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [dispatch]);
 
 
     return (

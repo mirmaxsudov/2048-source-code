@@ -1,9 +1,15 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom'
+import { changeLanguage } from '../../features/language/languageSlice';
 
-const Nav = ({ handleChangeLanguage }) => {
+const Nav = () => {
     const { t } = useTranslation();
+    const dispatch = useDispatch();
+    const { bestScore } = useSelector(state => state.game)
+    const { language } = useSelector(state => state.language)
+
     return (
         <nav className="c-nav py-5 bg-[#fff4eb]">
             <div className='container mx-auto px-24'>
@@ -22,14 +28,18 @@ const Nav = ({ handleChangeLanguage }) => {
                         </div>
                         <div className="best-score py-1 rounded-[15px] text-center text-[#988876] font-bold border-[2px] border-[#EAE7D9] px-10">
                             <h5>{t("nav.bestScore")}</h5>
-                            <p className='text-[20px]'>0</p>
+                            <p className='text-[20px]'>
+                                {bestScore}
+                            </p>
                         </div>
                     </div>
                     <div className="left-inputs">
                         <div className="game-language flex align-items-center gap-[20px]">
                             <select
-                                onChange={handleChangeLanguage}
+                                onChange={e => dispatch(changeLanguage(e.target.value))}
                                 name="lan"
+                                id="lan"
+                                value={language}
                                 class="text-white bg-[#998878] border border-[#fff4eb] rounded-lg text-[16px] focus:outline-none focus:ring-2 focus:ring-[#fff4eb] focus:border-[#fff4eb] shadow-sm px-2"
                             >
                                 <option value="uz">Uzbek</option>
@@ -38,7 +48,7 @@ const Nav = ({ handleChangeLanguage }) => {
                                 <option value="en">English</option>
                                 <option value="zh">中文</option>
                             </select>
-                            <button className='text-[#fff4eb] bg-[#998878] border border-[#fff4eb] rounded-lg text-[16px] focus:ring-2 focus:ring-[#fff4eb] focus:border-[#fff4eb] shadow-sm px-4 py-2 hover:bg-[#fff4eb] hover:text-[#998878] transition ease-in-out duration-300x hover:outline-double'>
+                            <button onClick={() => window.location.reload()} className='text-[#fff4eb] bg-[#998878] border border-[#fff4eb] rounded-lg text-[16px] focus:ring-2 focus:ring-[#fff4eb] focus:border-[#fff4eb] shadow-sm px-4 py-2 hover:bg-[#fff4eb] hover:text-[#998878] transition ease-in-out duration-300x hover:outline-double'>
                                 {t("nav.newGame")}
                             </button>
                         </div>
