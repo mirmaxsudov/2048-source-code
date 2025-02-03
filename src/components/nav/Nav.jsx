@@ -7,7 +7,7 @@ import { changeLanguage } from '../../features/language/languageSlice';
 const Nav = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const { bestScore } = useSelector(state => state.game)
+    const { bestScore, score } = useSelector(state => state.game)
     const { language } = useSelector(state => state.language)
 
     return (
@@ -24,7 +24,9 @@ const Nav = () => {
                     <div className="game-scores ml-14 flex justify-between items-center gap-[20px]">
                         <div className="current-score bg-[#EAE7D9] px-10 py-1 rounded-[15px] text-center text-[#988876] font-bold">
                             <h6>{t("nav.score")}</h6>
-                            <p className='text-[20px]'>0</p>
+                            <p className='text-[20px]'>
+                                {score}
+                            </p>
                         </div>
                         <div className="best-score py-1 rounded-[15px] text-center text-[#988876] font-bold border-[2px] border-[#EAE7D9] px-10">
                             <h5>{t("nav.bestScore")}</h5>

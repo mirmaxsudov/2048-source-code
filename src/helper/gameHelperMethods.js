@@ -68,9 +68,43 @@ export const getValBasedOnOnlyOneCell = (grid) => {
   return 2;
 };
 
+const calculateScoreBasedOnVal = (val) => {
+  val = Number(val);
+
+  switch (val) {
+    case 2:
+      return 2;
+    case 4:
+      return 4;
+    case 8:
+      return 8;
+    case 16:
+      return 10;
+    case 32:
+      return 12;
+    case 64:
+      return 14;
+    case 128:
+      return 16;
+    case 256:
+      return 30;
+    case 512:
+      return 50;
+    case 1024:
+      return 100;
+    case 2048:
+      return 200;
+    case 4096:
+      return 400;
+    default:
+      return 0;
+  }
+};
+
 export const makeUp = (grid) => {
   const newGrid = JSON.parse(JSON.stringify(grid));
   const size = newGrid.length;
+  let score = 0;
 
   for (let col = 0; col < size; col++) {
     const column = [];
@@ -82,6 +116,7 @@ export const makeUp = (grid) => {
 
     for (let i = 0; i < column.length - 1; i++) {
       if (column[i] === column[i + 1]) {
+        score += calculateScoreBasedOnVal(column[i]);
         column[i] *= 2;
         column[i + 1] = null;
       }
@@ -95,13 +130,19 @@ export const makeUp = (grid) => {
   }
 
   checkAndChange(newGrid);
+  console.log(score);
 
-  return newGrid;
+  return {
+    grid: newGrid,
+    score,
+  };
 };
 
 export const makeDown = (grid) => {
   const newGrid = JSON.parse(JSON.stringify(grid));
   const size = newGrid.length;
+
+  let score = 0;
 
   for (let col = 0; col < size; col++) {
     const column = [];
@@ -113,6 +154,7 @@ export const makeDown = (grid) => {
 
     for (let i = column.length - 1; i > 0; i--) {
       if (column[i] === column[i - 1]) {
+        score += calculateScoreBasedOnVal(column[i]);
         column[i] *= 2;
         column[i - 1] = null;
         i--;
@@ -130,11 +172,15 @@ export const makeDown = (grid) => {
   }
 
   checkAndChange(newGrid);
-  return newGrid;
+  return {
+    grid: newGrid,
+    score,
+  };
 };
 
 export const makeRight = (grid) => {
   const newGrid = JSON.parse(JSON.stringify(grid));
+  let score = 0;
 
   for (let row = 0; row < newGrid.length; row++) {
     const currentRow = newGrid[row]
@@ -143,6 +189,7 @@ export const makeRight = (grid) => {
 
     for (let i = currentRow.length - 1; i > 0; i--) {
       if (currentRow[i] === currentRow[i - 1]) {
+        score += calculateScoreBasedOnVal(currentRow[i]);
         currentRow[i] *= 2;
         currentRow[i - 1] = null;
         i--;
@@ -162,11 +209,15 @@ export const makeRight = (grid) => {
 
   checkAndChange(newGrid);
 
-  return newGrid;
+  return {
+    grid: newGrid,
+    score,
+  };
 };
 
 export const makeLeft = (grid) => {
   const newGrid = JSON.parse(JSON.stringify(grid));
+  let score = 0;
 
   for (let row = 0; row < newGrid.length; row++) {
     const currentRow = newGrid[row]
@@ -175,6 +226,7 @@ export const makeLeft = (grid) => {
 
     for (let i = 0; i < currentRow.length - 1; i++) {
       if (currentRow[i] === currentRow[i + 1]) {
+        score += calculateScoreBasedOnVal(currentRow[i]);
         currentRow[i] *= 2;
         currentRow[i + 1] = null;
       }
@@ -188,7 +240,10 @@ export const makeLeft = (grid) => {
 
   checkAndChange(newGrid);
 
-  return newGrid;
+  return {
+    grid: newGrid,
+    score,
+  };
 };
 
 export const getRandomValue = (grid) => {

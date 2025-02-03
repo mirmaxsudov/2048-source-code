@@ -200,7 +200,7 @@ const gameSlice = createSlice({
       state.grid = action.payload;
     },
     setInitValues: (state, _) => {
-      state.score = 315;
+      state.score = 0;
       const bestScore = localStorage.getItem("bestScore") || 0;
 
       state.bestScore = bestScore;
@@ -243,7 +243,9 @@ const gameSlice = createSlice({
 
       const isPossible = isPossibleToGenerateRandomValue(state.grid, "u");
 
-      state.grid = makeUp(state.grid);
+      const newGridObj = makeUp(state.grid);
+      state.grid = newGridObj.grid;
+      state.score += newGridObj.score;
       if (isPossible) state.grid = getRandomValue(state.grid);
     },
     moveDown: (state, _) => {
@@ -254,7 +256,10 @@ const gameSlice = createSlice({
 
       const isPossible = isPossibleToGenerateRandomValue(state.grid, "down");
 
-      state.grid = makeDown(state.grid);
+      const newGrid = makeDown(state.grid);
+      state.grid = newGrid.grid;
+      state.score += newGrid.score;
+
       if (isPossible) state.grid = getRandomValue(state.grid);
     },
     moveLeft: (state, _) => {
@@ -265,7 +270,9 @@ const gameSlice = createSlice({
 
       const isPossible = isPossibleToGenerateRandomValue(state.grid, "left");
 
-      state.grid = makeLeft(state.grid);
+      const newGrid = makeLeft(state.grid);
+      state.grid = newGrid.grid;
+      state.score += newGrid.score;
       if (isPossible) state.grid = getRandomValue(state.grid);
     },
     moveRight: (state, _) => {
@@ -276,8 +283,14 @@ const gameSlice = createSlice({
 
       const isPossible = isPossibleToGenerateRandomValue(state.grid, "right");
 
-      state.grid = makeRight(state.grid);
+      const newGrid = makeRight(state.grid);
+      state.grid = newGrid.grid;
+      state.score += newGrid.score;
       if (isPossible) state.grid = getRandomValue(state.grid);
+    },
+    setGameScore: (state, action) => {
+      if (action.payload < 0) return;
+      state.score += action.payload;
     },
   },
 });
@@ -296,5 +309,6 @@ export const {
   moveDown,
   moveLeft,
   moveRight,
+  setGameScore,
 } = gameSlice.actions;
 export default gameSlice.reducer;
