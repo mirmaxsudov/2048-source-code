@@ -9,12 +9,14 @@
 - **Moslashuvchan:** Turli qurilmalarda (desktop va mobil) ishlashga moslashtirilgan dizayn.
 - **Tezkor o'yin:** Harakatlar darhol aks etadi va o'yinning mantiqiy qismi aniq bajariladi.
 
+[My Telegram Blog](https://t.me/abdurhamonMirmaxsudov)
+
 ## Loyihani Ishga Tushurish
 
 ### Talablar
 
 - [Node.js](https://nodejs.org/) (versiya 14 yoki undan yuqori)
-- [npm](https://www.npmjs.com/) yoki [Yarn](https://yarnpkg.com/)
+- [npm](https://www.npmjs.com/)
 
 ### O'rnatish
 
