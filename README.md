@@ -23,6 +23,6 @@
 1. **Loyihani klonlash:**
 
    ```bash
-   git clone https://github.com/username/2048.git
+   git clone https://github.com/mirmaxsudov/2048-source-code.git
    cd 2048
    ```
