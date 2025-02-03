@@ -9,15 +9,19 @@ const Header = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    // For tracking the starting point of a touch swipe
     const touchStartRef = useRef({ x: 0, y: 0 });
 
-    // Redirect if game is over
+    // useEffect(() => {
+    //     localStorage.removeItem("last-game-grid");
+    // }, [])
+
+    console.log(grid);
+
+
     useEffect(() => {
         if (status === "GAMEOVER") navigate("/game-over");
     }, [status, navigate]);
 
-    // Handle keyboard arrow presses for desktop users
     useEffect(() => {
         const handleKeyDown = (event) => {
             switch (event.key) {
@@ -42,33 +46,27 @@ const Header = () => {
         return () => window.removeEventListener("keydown", handleKeyDown);
     }, [dispatch]);
 
-    // Touch start handler: record the initial touch coordinates
     const handleTouchStart = (e) => {
         const touch = e.touches[0];
         touchStartRef.current = { x: touch.clientX, y: touch.clientY };
     };
 
-    // Touch end handler: compare end coordinates with starting coordinates and dispatch the move
     const handleTouchEnd = (e) => {
         const touch = e.changedTouches[0];
         const endX = touch.clientX;
         const endY = touch.clientY;
         const { x: startX, y: startY } = touchStartRef.current;
 
-        // Calculate the difference in both directions
         const diffX = endX - startX;
         const diffY = endY - startY;
 
-        // Check which axis had a bigger movement and dispatch accordingly
         if (Math.abs(diffX) > Math.abs(diffY)) {
-            // Horizontal movement
             if (diffX > 0) {
                 dispatch(moveRight());
             } else {
                 dispatch(moveLeft());
             }
         } else {
-            // Vertical movement
             if (diffY > 0) {
                 dispatch(moveDown());
             } else {
@@ -103,7 +101,7 @@ const Header = () => {
     );
 };
 
-const Item2048 = ({ item: { val, bgColor, textColor, defaultBgColor } }) => {
+export const Item2048 = ({ item: { val, bgColor, textColor, defaultBgColor } }) => {
     return (
         <div
             style={{

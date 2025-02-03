@@ -109,6 +109,7 @@ export const thirtyTwoEightHundred = {
 const initGameState = {
   score: 0,
   bestScore: 0,
+  moves: 0,
   status: "PLAYING", // || "GAMEOVER",
   grid: [
     [
@@ -201,6 +202,7 @@ const gameSlice = createSlice({
     },
     setInitValues: (state, _) => {
       state.score = 0;
+      state.moves = 0;
       const bestScore = localStorage.getItem("bestScore") || 0;
 
       state.bestScore = bestScore;
@@ -238,12 +240,14 @@ const gameSlice = createSlice({
     moveUp: (state, _) => {
       if (isGameOver(state.grid)) {
         state.status = "GAMEOVER";
+        setLastGameGrid(state);
         return;
       }
 
       const isPossible = isPossibleToGenerateRandomValue(state.grid, "u");
 
       const newGridObj = makeUp(state.grid);
+      state.moves += 1;
       state.grid = newGridObj.grid;
       state.score += newGridObj.score;
       if (isPossible) state.grid = getRandomValue(state.grid);
@@ -251,12 +255,15 @@ const gameSlice = createSlice({
     moveDown: (state, _) => {
       if (isGameOver(state.grid)) {
         state.status = "GAMEOVER";
+        setLastGameGrid(state.grid);
         return;
       }
 
       const isPossible = isPossibleToGenerateRandomValue(state.grid, "down");
 
       const newGrid = makeDown(state.grid);
+      state.moves += 1;
+
       state.grid = newGrid.grid;
       state.score += newGrid.score;
 
@@ -265,12 +272,15 @@ const gameSlice = createSlice({
     moveLeft: (state, _) => {
       if (isGameOver(state.grid)) {
         state.status = "GAMEOVER";
+        setLastGameGrid(state);
         return;
       }
 
       const isPossible = isPossibleToGenerateRandomValue(state.grid, "left");
 
       const newGrid = makeLeft(state.grid);
+      state.moves += 1;
+
       state.grid = newGrid.grid;
       state.score += newGrid.score;
       if (isPossible) state.grid = getRandomValue(state.grid);
@@ -278,12 +288,15 @@ const gameSlice = createSlice({
     moveRight: (state, _) => {
       if (isGameOver(state.grid)) {
         state.status = "GAMEOVER";
+        setLastGameGrid(state);
         return;
       }
 
       const isPossible = isPossibleToGenerateRandomValue(state.grid, "right");
 
       const newGrid = makeRight(state.grid);
+      state.moves += 1;
+
       state.grid = newGrid.grid;
       state.score += newGrid.score;
       if (isPossible) state.grid = getRandomValue(state.grid);
@@ -297,6 +310,17 @@ const gameSlice = createSlice({
 
 function getRandom(min = 1, max = 4) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function setLastGameGrid(state) {
+  localStorage.setItem(
+    "last-game-grid",
+    JSON.stringify({
+      score: state.score,
+      grid: state.grid,
+      moves: state.moves,
+    })
+  );
 }
 
 export const {
