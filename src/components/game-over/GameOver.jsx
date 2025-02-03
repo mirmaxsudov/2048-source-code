@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { Item2048 } from "../header/Header"
+import { setInitValues } from "../../features/2048/gameSlice"
 
 const GameOver = () => {
     const game = useSelector((state) => state.game)
     const navigate = useNavigate();
+    const dispatch = useDispatch()
     const [lastGameInfo] = useState(JSON.parse(localStorage.getItem("last-game-grid")));
-
-    if (!lastGameInfo) {
-        navigate("/");
-    }
 
     useEffect(() => {
         const maxScore = localStorage.getItem("bestScore") || 0
@@ -18,6 +16,11 @@ const GameOver = () => {
             localStorage.setItem("bestScore", game.score.toString())
         }
     }, [game.score])
+
+    if (!JSON.parse(localStorage.getItem("last-game-grid"))) {
+        navigate("/");
+        return undefined
+    }
 
     return (
         <section className="min-h-screen flex items-center justify-center bg-[#faf8ef] p-4">
@@ -35,7 +38,7 @@ const GameOver = () => {
                         <div
                             className="game-2048-wrapper grid grid-cols-4 bg-[#9C8B7D] w-[85vw] h-[85vw] max-w-[350px] max-h-[350px] rounded-[10px] border-[2vw] sm:border-[8px] lg:border-[10px] border-[#9C8B7D] relative"
                         >
-                            {lastGameInfo?.grid.map((arr, rowIndex) =>
+                            {lastGameInfo.grid.map((arr, rowIndex) =>
                                 arr.map((item, colIndex) => (
                                     <Item2048
                                         item={item}
@@ -50,8 +53,9 @@ const GameOver = () => {
                 <div className="space-y-3">
                     <button
                         onClick={() => {
-                            localStorage.removeItem("last-game-grid");
                             navigate("/");
+                            dispatch(setInitValues())
+                            // localStorage.removeItem("last-game-grid");
                         }}
                         className="w-full py-3 bg-[#8f7a66] text-white rounded-md
                                  font-bold text-xl hover:bg-[#7f6a56] 

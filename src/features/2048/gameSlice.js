@@ -203,6 +203,7 @@ const gameSlice = createSlice({
     setInitValues: (state, _) => {
       state.score = 0;
       state.moves = 0;
+      state.status = "PLAYING";
       const bestScore = localStorage.getItem("bestScore") || 0;
 
       state.bestScore = bestScore;
